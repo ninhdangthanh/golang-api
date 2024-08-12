@@ -42,12 +42,13 @@ func main() {
 
 	database.InitDB()
 	db := database.GetDB()
-	db.AutoMigrate(&models.UserModel{}, &models.TokenModel{}, &models.SortModel{}, &models.ProductModel{})
+	db.AutoMigrate(&models.UserModel{}, &models.SortModel{}, &models.ProductModel{})
 
 	seedAdminUser(db, &admin)
 
 	r := gin.Default()
 	r.POST("/sign-up", controllers.CreateUser)
+	r.POST("/sign-in", controllers.SignInUser)
 
 	port := "5000"
 	log.Printf("Server is running on port %s", port)

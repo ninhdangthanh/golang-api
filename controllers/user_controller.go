@@ -30,3 +30,31 @@ func CreateUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
+
+func SignInUser(c *gin.Context) {
+	var credentials models.UserModel
+
+	if err := c.ShouldBindJSON(&credentials); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userService := services.NewUserService()
+
+	user, err := userService.AuthenticateUser(credentials.Email, credentials.Password)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
+
+	accessToken, refreshToken, err := services.GenerateTokens(user.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate tokens"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+	})
+}

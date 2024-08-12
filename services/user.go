@@ -39,6 +39,20 @@ func (s *UserService) CreateUser(user *models.UserModel) error {
 	return nil
 }
 
+func (s *UserService) AuthenticateUser(email, password string) (*models.UserModel, error) {
+	var user models.UserModel
+
+	if err := s.db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 // AppError represents an application error with a status code and message
 type AppError struct {
 	StatusCode int

@@ -6,7 +6,6 @@ type UserModel struct {
 	Password string         `gorm:"type:varchar(100);not null" json:"password"`
 	Products []ProductModel `gorm:"foreignKey:UserID" json:"-"`
 	Sorts    []SortModel    `gorm:"foreignKey:UserID" json:"-"`
-	Tokens   []TokenModel   `gorm:"foreignKey:UserID" json:"tokens"`
 }
 
 func (UserModel) TableName() string {

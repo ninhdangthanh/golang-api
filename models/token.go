@@ -5,3 +5,7 @@ type TokenModel struct {
 	Value  string `gorm:"type:varchar(100);not null" json:"value"`
 	UserID uint   `json:"user_id"`
 }
+
+func (TokenModel) TableName() string {
+	return "tokens"
+}

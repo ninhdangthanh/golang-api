@@ -5,3 +5,7 @@ type ProductModel struct {
 	Name   string `gorm:"type:varchar(100);not null" json:"name"`
 	UserID uint   `json:"user_id"`
 }
+
+func (ProductModel) TableName() string {
+	return "products"
+}

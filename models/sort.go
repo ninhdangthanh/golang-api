@@ -5,3 +5,7 @@ type SortModel struct {
 	Type   string `gorm:"type:varchar(100);not null" json:"type"`
 	UserID uint   `json:"user_id"`
 }
+
+func (SortModel) TableName() string {
+	return "sorts"
+}

@@ -3,12 +3,22 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/example/intern/middleware"
 	"github.com/example/intern/models"
 	"github.com/example/intern/services"
+	"github.com/example/intern/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func CreateUser(c *gin.Context) {
+type UserController struct {
+	UserService *services.UserService
+}
+
+func NewUserController(service *services.UserService) *UserController {
+	return &UserController{UserService: service}
+}
+
+func (ctrl *UserController) CreateUser(c *gin.Context) {
 	var user models.UserModel
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -16,10 +26,8 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	userService := services.NewUserService()
-
-	if err := userService.CreateUser(&user); err != nil {
-		appErr, ok := err.(*services.AppError)
+	if err := ctrl.UserService.CreateUser(&user); err != nil {
+		appErr, ok := err.(*utils.AppError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "An unexpected error occurred"})
 			return
@@ -31,7 +39,7 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func SignInUser(c *gin.Context) {
+func (ctrl *UserController) SignInUser(c *gin.Context) {
 	var credentials models.UserModel
 
 	if err := c.ShouldBindJSON(&credentials); err != nil {
@@ -39,15 +47,13 @@ func SignInUser(c *gin.Context) {
 		return
 	}
 
-	userService := services.NewUserService()
-
-	user, err := userService.AuthenticateUser(credentials.Email, credentials.Password)
+	user, err := ctrl.UserService.AuthenticateUser(credentials.Email, credentials.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 		return
 	}
 
-	accessToken, refreshToken, err := services.GenerateTokens(user.ID)
+	accessToken, refreshToken, err := middleware.GenerateTokens(user.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate tokens"})
 		return

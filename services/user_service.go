@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/example/intern/database"
 	"github.com/example/intern/models"
+	"github.com/example/intern/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -15,25 +15,25 @@ type UserService struct {
 }
 
 // NewUserService creates a new UserService
-func NewUserService() *UserService {
-	return &UserService{db: database.GetDB()}
+func NewUserService(db *gorm.DB) *UserService {
+	return &UserService{db}
 }
 
 func (s *UserService) CreateUser(user *models.UserModel) error {
 	var existingUser models.UserModel
 	if err := s.db.Where("email = ?", user.Email).First(&existingUser).Error; err == nil {
-		return &AppError{StatusCode: http.StatusBadRequest, Message: "Email is already taken"}
+		return &utils.AppError{StatusCode: http.StatusBadRequest, Message: "Email is already taken"}
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Printf("Failed to hash password: %v", err)
-		return &AppError{StatusCode: http.StatusInternalServerError, Message: "Failed to process password"}
+		return &utils.AppError{StatusCode: http.StatusInternalServerError, Message: "Failed to process password"}
 	}
 	user.Password = string(hashedPassword)
 
 	if err := s.db.Create(user).Error; err != nil {
-		return &AppError{StatusCode: http.StatusInternalServerError, Message: "Failed to create user"}
+		return &utils.AppError{StatusCode: http.StatusInternalServerError, Message: "Failed to create user"}
 	}
 
 	return nil
@@ -51,15 +51,4 @@ func (s *UserService) AuthenticateUser(email, password string) (*models.UserMode
 	}
 
 	return &user, nil
-}
-
-// AppError represents an application error with a status code and message
-type AppError struct {
-	StatusCode int
-	Message    string
-}
-
-// Error implements the error interface
-func (e *AppError) Error() string {
-	return e.Message
 }

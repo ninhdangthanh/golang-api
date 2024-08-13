@@ -14,7 +14,6 @@ type UserService struct {
 	db *gorm.DB
 }
 
-// NewUserService creates a new UserService
 func NewUserService(db *gorm.DB) *UserService {
 	return &UserService{db}
 }

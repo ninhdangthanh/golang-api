@@ -39,9 +39,8 @@ func main() {
 	ProductController := controllers.NewProductController(productService)
 	r.POST("/products", middleware.JWTAuthMiddleware(), ProductController.CreateProduct)
 	r.GET("/products", middleware.JWTAuthMiddleware(), ProductController.GetOwnProducts)
-	// r.GET("/products/:id", middleware.JWTAuthMiddleware(), getProduct)
-	// r.PUT("/products/:id", middleware.JWTAuthMiddleware(), updateProduct)
-	// r.DELETE("/products/:id", middleware.JWTAuthMiddleware(), deleteProduct)
+	r.DELETE("/products/:id", middleware.JWTAuthMiddleware(), ProductController.DeleteProduct)
+	r.PUT("/products/:id", middleware.JWTAuthMiddleware(), ProductController.UpdateProduct)
 
 	port := "5000"
 	log.Printf("Server is running on port %s", port)

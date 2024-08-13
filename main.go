@@ -42,7 +42,7 @@ func main() {
 
 	database.InitDB()
 	db := database.GetDB()
-	db.AutoMigrate(&models.UserModel{}, &models.SortModel{}, &models.ProductModel{})
+	db.AutoMigrate(&models.UserModel{}, &models.ProductModel{})
 
 	seedAdminUser(db, &admin)
 

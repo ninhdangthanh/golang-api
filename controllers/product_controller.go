@@ -17,7 +17,7 @@ func NewProductController(service *services.ProductService) *ProductController {
 	return &ProductController{ProductService: service}
 }
 
-func (ctrl *ProductController) CreateProduct(c *gin.Context) {
+func (ctrl *ProductController) CreateProduct(c *gin.Context, ch chan string) {
 	var product models.ProductModel
 
 	userID, exists := c.Get("userID")
@@ -45,6 +45,8 @@ func (ctrl *ProductController) CreateProduct(c *gin.Context) {
 		return
 	}
 
+	ch <- "A product is created.."
+
 	c.JSON(http.StatusCreated, product)
 }
 
@@ -64,7 +66,7 @@ func (ctrl *ProductController) GetOwnProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, products)
 }
 
-func (ctrl *ProductController) DeleteProduct(c *gin.Context) {
+func (ctrl *ProductController) DeleteProduct(c *gin.Context, ch chan string) {
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "User ID not found in context"})
@@ -83,6 +85,8 @@ func (ctrl *ProductController) DeleteProduct(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	ch <- "A product is deleted.."
 
 	c.JSON(http.StatusOK, gin.H{"message": "Product deleted successfully"})
 }

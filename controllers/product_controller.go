@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/example/intern/models"
 	"github.com/example/intern/services"
@@ -27,11 +28,10 @@ func (ctrl *ProductController) CreateProduct(c *gin.Context, ch chan string) {
 		return
 	}
 
-	// ?
-	// if strings.TrimSpace(product.Name) == "" {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Product name must not be blank"})
-	// 	return
-	// }
+	if strings.TrimSpace(product.Name) == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Product name must not be blank"})
+		return
+	}
 
 	product.UserID = userID.(uint)
 

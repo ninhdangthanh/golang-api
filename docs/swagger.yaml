@@ -1,0 +1,18 @@
+info:
+  contact: {}
+paths:
+  /products:
+    post:
+      consumes:
+      - application/json
+      description: Add a new product
+      operationId: get-string-by-int
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: created
+          schema:
+            type: string
+      summary: Add a new product
+swagger: "2.0"

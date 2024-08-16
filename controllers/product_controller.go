@@ -18,6 +18,13 @@ func NewProductController(service *services.ProductService) *ProductController {
 	return &ProductController{ProductService: service}
 }
 
+// @Summary Add a new product
+// @Description Add a new product
+// @ID get-string-by-int
+// @Accept  json
+// @Produce  json
+// @Success 201 {string} string  "created"
+// @Router /products [post]
 func (ctrl *ProductController) CreateProduct(c *gin.Context, ch chan string) {
 	var product models.ProductModel
 

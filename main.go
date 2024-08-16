@@ -6,11 +6,14 @@ import (
 
 	"github.com/example/intern/controllers"
 	"github.com/example/intern/database"
+	_ "github.com/example/intern/docs"
 	"github.com/example/intern/middleware"
 	"github.com/example/intern/models"
 	"github.com/example/intern/services"
 	"github.com/example/intern/utils"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var productChannel = make(chan string)
@@ -34,6 +37,8 @@ func main() {
 	utils.SeedAdminUser(db, &admin)
 
 	r := gin.Default()
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, url))
 
 	/// user
 	userService := services.NewUserService(db)
@@ -53,7 +58,7 @@ func main() {
 	})
 	r.PUT("/products/:id", middleware.JWTAuthMiddleware(), ProductController.UpdateProduct)
 
-	port := "5000"
+	port := "8080"
 	log.Printf("Server is running on port %s", port)
 
 	defer close(productChannel)

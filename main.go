@@ -18,6 +18,24 @@ import (
 
 var productChannel = make(chan string)
 
+// @title           Gin Service
+// @version         1.0
+// @description     A management service API in Go using Gin framework.
+// @termsOfService  https://tos.santoshk.dev
+
+// @contact.name   Santosh Kumar
+// @contact.url    https://twitter.com/sntshk
+// @contact.email  sntshkmr60@gmail.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
+// @host      localhost:8080
+// @BasePath  /
 func main() {
 	go utils.LogServiceStatus()
 

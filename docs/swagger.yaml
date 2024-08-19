@@ -1,18 +1,70 @@
+basePath: /
+definitions:
+  controllers.ProductDTO:
+    properties:
+      name:
+        type: string
+    type: object
+  models.ProductModel:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      user_id:
+        type: integer
+    type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: sntshkmr60@gmail.com
+    name: Santosh Kumar
+    url: https://twitter.com/sntshk
+  description: A management service API in Go using Gin framework.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://tos.santoshk.dev
+  title: Gin Service
+  version: "1.0"
 paths:
   /products:
     post:
       consumes:
       - application/json
       description: Add a new product
-      operationId: get-string-by-int
+      parameters:
+      - description: Product DTO
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProductDTO'
       produces:
       - application/json
       responses:
         "201":
-          description: created
+          description: Created product object
           schema:
-            type: string
+            $ref: '#/definitions/models.ProductModel'
+        "400":
+          description: Bad request error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
       summary: Add a new product
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

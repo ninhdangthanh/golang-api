@@ -18,12 +18,19 @@ func NewProductController(service *services.ProductService) *ProductController {
 	return &ProductController{ProductService: service}
 }
 
+type ProductDTO struct {
+	Name string
+}
+
 // @Summary Add a new product
 // @Description Add a new product
-// @ID get-string-by-int
 // @Accept  json
 // @Produce  json
-// @Success 201 {string} string  "created"
+// @Param body body ProductDTO true "Product DTO"
+// @Success 201 {object} models.ProductModel "Created product object"
+// @Failure 400 {object} map[string]string "Bad request error"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Security BearerAuth
 // @Router /products [post]
 func (ctrl *ProductController) CreateProduct(c *gin.Context, ch chan string) {
 	var product models.ProductModel
